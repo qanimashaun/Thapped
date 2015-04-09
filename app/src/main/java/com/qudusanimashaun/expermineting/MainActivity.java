@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,27 +50,42 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-
-        mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-        mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
-
-        mTabHost.addTab(
-                mTabHost.newTabSpec("tab1").setIndicator("Tab 1", null),
-                FragmentTab.class, null);
-        mTabHost.addTab(
-                mTabHost.newTabSpec("tab2").setIndicator("Tab 2", null),
-                FragmentTab.class, null);
-        mTabHost.addTab(
-                mTabHost.newTabSpec("tab3").setIndicator("Tab 3", null),
-                FragmentTab.class, null);
+//
+//        mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
+//        mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
+//
+//        mTabHost.addTab(
+//                mTabHost.newTabSpec("tab1").setIndicator("Tab 1", null),
+//                FragmentTab.class, null);
+//        mTabHost.addTab(
+//                mTabHost.newTabSpec("tab2").setIndicator("Tab 2", null),
+//                FragmentTab.class, null);
+//        mTabHost.addTab(
+//                mTabHost.newTabSpec("tab3").setIndicator("Tab 3", null),
+//                FragmentTab.class, null);
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
+        Fragment fragment=null;
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        switch(position) {
+            case 0:
+                fragment = new MainFragment();
+                break;
+            case 1:
+                fragment = new ProfileFragment();
+                break;
+            case 2:
+                fragment = new ProfileFragment();
+                break;
+            default:
+        }
+        Log.i("Position", String.valueOf(position));
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, fragment)
                 .commit();
     }
 
