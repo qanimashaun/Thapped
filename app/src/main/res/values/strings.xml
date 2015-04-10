@@ -13,5 +13,11 @@
     <string name="action_example">Example action</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_main_fragment">MainFragment</string>
+    <string name="title_activity_thapped">Thapped</string>
+    <string name="facebook_app_id">881645598565656</string>
+    <string name="parse_app_id">ovG2YcOPTv7Ex3THKOvWOqCANXlAJwwKPkz1U3RS</string>
+    <string name="title_activity_log_in_button">LogInButton</string>
+    <string name="parse_client_key">KYzJbWmi7YV17FwJheiUKi7jd8cQLVQDFD55bRWk</string>
+    <string name="title_facebook_login">FaceBook</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package com.qudusanimashaun.expermineting;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -19,6 +20,11 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.parse.ParseUser;
+import com.parse.ui.ParseLoginBuilder;
+
+import java.util.Arrays;
 
 
 public class MainActivity extends ActionBarActivity
@@ -39,31 +45,10 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_activity2);
 
-        mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
 
-        // Set up the drawer.
-        mNavigationDrawerFragment.setUp(
-                R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
-
-//
-//        mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
-//        mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
-//
-//        mTabHost.addTab(
-//                mTabHost.newTabSpec("tab1").setIndicator("Tab 1", null),
-//                FragmentTab.class, null);
-//        mTabHost.addTab(
-//                mTabHost.newTabSpec("tab2").setIndicator("Tab 2", null),
-//                FragmentTab.class, null);
-//        mTabHost.addTab(
-//                mTabHost.newTabSpec("tab3").setIndicator("Tab 3", null),
-//                FragmentTab.class, null);
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -111,17 +96,24 @@ public class MainActivity extends ActionBarActivity
     }
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main_activity2, menu);
-            restoreActionBar();
-            return true;
+        if(ParseUser.getCurrentUser()!=null) {
+            if (!mNavigationDrawerFragment.isDrawerOpen()) {
+                // Only show items in the action bar relevant to this screen
+                // if the drawer is not showing. Otherwise, let the drawer
+                // decide what to show in the action bar.
+                getMenuInflater().inflate(R.menu.main_activity2, menu);
+                restoreActionBar();
+                return true;
+
+
+            }
         }
+
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -133,6 +125,8 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            ParseUser.logOut();
+            navigateToLogin();
             return true;
         }
 
@@ -178,5 +172,41 @@ public class MainActivity extends ActionBarActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+    private void navigateToLogin() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ParseUser.getCurrentUser() == null) {
+
+            ParseLoginBuilder builder = new ParseLoginBuilder(MainActivity.this);
+            builder.setFacebookLoginEnabled(true);
+            Intent parseLoginIntent = builder.setParseLoginEnabled(true)
+                    .setParseLoginButtonText("Go")
+                    .setParseSignupButtonText("Register")
+                    .setParseLoginHelpText("Forgot password?")
+                    .setParseLoginInvalidCredentialsToastText("You email and/or password is not correct")
+                    .setParseLoginEmailAsUsername(true)
+                    .setParseSignupSubmitButtonText("Submit registration")
+                    .setFacebookLoginEnabled(true)
+                    .setFacebookLoginButtonText("Facebook")
+                    .setFacebookLoginPermissions(Arrays.asList("user_status", "read_stream"))
+                    .build();
+            startActivityForResult(parseLoginIntent, 0);}
+        else  {
+            setContentView(R.layout.activity_main_activity2);
+            mNavigationDrawerFragment = (NavigationDrawerFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+            mTitle = getTitle();
+            // Set up the drawer.
+            mNavigationDrawerFragment.setUp(
+                    R.id.navigation_drawer,
+                    (DrawerLayout) findViewById(R.id.drawer_layout));
+        }
+    }
 }
